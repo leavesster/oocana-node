@@ -1,9 +1,10 @@
 name: pr
 on:
   pull_request:
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -56,3 +57,7 @@ jobs:
           sleep 5
           pnpm run -F oocana-test nonlayer
           pnpm run test
+      - name: Setup tmate session # only enable when debugging
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 10
+        if: failure()
